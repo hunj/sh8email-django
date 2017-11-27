@@ -20,7 +20,8 @@ class MailList(APIView):
         mail_list = Mail.objects.filter(recipient=nickname).order_by('-recip_date')
         # TODO I think this logic should be moved to MailListSerializer.
         for mail in mail_list:
-            mail.contents = mail.contents[:50]
+            stripped_text = ''.join(xml.etree.ElementTree.fromstring(mail.contents).itertext())
+            mail.contents = stripped_text[:50]
             if mail.is_secret():
                 mail.contents = ''
 
